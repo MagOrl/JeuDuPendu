@@ -6,6 +6,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Pendu",
+            "request": "launch",
+            "mainClass": "Pendu",
+            "projectName": "JeuDuPendu_6f589571"
+        },
+        {
+            "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"

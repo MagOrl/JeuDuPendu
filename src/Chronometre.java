@@ -6,11 +6,10 @@ import javafx.util.Duration;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-
 /**
  * Permet de gérer un Text associé à une Timeline pour afficher un temps écoulé
  */
-public class Chronometre extends Text{
+public class Chronometre extends Text {
     /**
      * timeline qui va gérer le temps
      */
@@ -29,37 +28,49 @@ public class Chronometre extends Text{
      * avec un label initialisé à "0:0:0"
      * Ce constructeur créer la Timeline, la KeyFrame et le contrôleur
      */
-    public Chronometre(){
-        // A implémenter
+    public Chronometre() {
+        this.actionTemps = new ControleurChronometre(this);
+        this.keyFrame = new KeyFrame(Duration.millis(100), this.actionTemps);
+        this.timeline = new Timeline(this.keyFrame);
+        this.timeline.setCycleCount(Timeline.INDEFINITE);
+        this.timeline.play();
     }
 
     /**
      * Permet au controleur de mettre à jour le text
      * la durée est affichée sous la forme m:s
+     * 
      * @param tempsMillisec la durée depuis à afficher
      */
-    public void setTime(long tempsMillisec){
-        // A implémenter
+    public void setTime(long tempsMillisec) {
+        String res = "";
+        long min = 0;
+        if (tempsMillisec >= 60000) {
+            min = tempsMillisec / 60000;
+            res += (int) min + " Minutes" + (min - ((int) min)) / 60 + " Secondes";
+        } else {
+            res += tempsMillisec * 1000 + " Secondes";
+        }
     }
 
     /**
      * Permet de démarrer le chronomètre
      */
-    public void start(){
-        // A implémenter
+    public void start() {
+        timeline.play();
     }
 
     /**
      * Permet d'arrêter le chronomètre
      */
-    public void stop(){
-        // A implémenter
+    public void stop() {
+        timeline.stop();
     }
 
     /**
      * Permet de remettre le chronomètre à 0
      */
-    public void resetTime(){
-        // A implémenter
+    public void resetTime() {
+        this.setText("0");
     }
 }

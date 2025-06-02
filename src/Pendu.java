@@ -102,7 +102,7 @@ public class Pendu extends Application {
         this.boutonMaison = new Button("", img1);
         this.boutonParametres = new Button("", img2);
         this.boutonInfo = new Button("", img3);
-        this.boutonMaison.setOnAction(new RetourAccueil(modelePendu,this));
+        this.boutonMaison.setOnAction(new RetourAccueil(modelePendu, this));
         this.boutonParametres.setOnAction(new ControleurParametre(this));
         this.boutonInfo.setOnAction(new ControleurInfos(this));
     }
@@ -114,7 +114,6 @@ public class Pendu extends Application {
         BorderPane fenetre = new BorderPane();
         fenetre.setTop(this.titre());
         fenetre.setCenter(pn);
-        
         return new Scene(fenetre, 800, 1000);
     }
 
@@ -135,25 +134,30 @@ public class Pendu extends Application {
     }
 
     // /**
-    //  * @return le panel du chronomètre
-    //  */
+    // * @return le panel du chronomètre
+    // */
     // private TitledPane leChrono(){
-    //     A implementer
-    //     TitledPane res = new TitledPane();
-    //     return res;
+    // A implementer
+    // TitledPane res = new TitledPane();
+    // return res;
     // }
     // /**
-    //  * @return la fenêtre de jeu avec le mot crypté, l'image, la barre
-    //  *         de progression et le clavier
-    //  */
-    private Pane fenetreJeu(){
+    // * @return la fenêtre de jeu avec le mot crypté, l'image, la barre
+    // * de progression et le clavier
+    // */
+    private Pane fenetreJeu() {
+        boutonMaison.setDisable(false);
+        boutonParametres.setDisable(true);
+        boutonInfo.setDisable(false);
         BorderPane bp = new BorderPane();
-        
+
         return bp;
     }
+
     // /**
-    //  * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de jeu
-    //  */
+    // * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de
+    // jeu
+    // */
     private Pane fenetreAccueil() {
         boutonMaison.setDisable(true);
         boutonParametres.setDisable(false);
@@ -165,9 +169,11 @@ public class Pendu extends Application {
         RadioButton rb2 = new RadioButton("Médium");
         RadioButton rb3 = new RadioButton("Difficile");
         RadioButton rb4 = new RadioButton("Expert");
-        rb1.setOnAction(new ControleurNiveau(modelePendu));rb2.setOnAction(new ControleurNiveau(modelePendu));
-        rb3.setOnAction(new ControleurNiveau(modelePendu));rb4.setOnAction(new ControleurNiveau(modelePendu));
-        bt.setOnAction(new ControleurLancerPartie(modelePendu,this));
+        rb1.setOnAction(new ControleurNiveau(modelePendu));
+        rb2.setOnAction(new ControleurNiveau(modelePendu));
+        rb3.setOnAction(new ControleurNiveau(modelePendu));
+        rb4.setOnAction(new ControleurNiveau(modelePendu));
+        bt.setOnAction(new ControleurLancerPartie(modelePendu, this));
         rb1.setToggleGroup(tg);
         rb3.setToggleGroup(tg);
         rb2.setToggleGroup(tg);
@@ -176,7 +182,7 @@ public class Pendu extends Application {
         radiobox.getChildren().addAll(rb1, rb2, rb3, rb4);
         TitledPane tp = new TitledPane("Niveau de difficulté", radiobox);
         tp.setCollapsible(false);
-        vb.getChildren().addAll(bt,tp);
+        vb.getChildren().addAll(bt, tp);
         vb.setPadding(new Insets(15));
         return vb;
     }
@@ -193,9 +199,11 @@ public class Pendu extends Application {
             this.lesImages.add(new Image(file.toURI().toString()));
         }
     }
-    public void modeAccueil(){
+
+    public void modeAccueil() {
         this.laScene(fenetreAccueil());
     }
+
     public void modeJeu() {
         this.laScene(fenetreJeu());
     }
@@ -229,7 +237,8 @@ public class Pendu extends Application {
     }
 
     public Alert popUpPartieEnCours() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "La partie est en cours!\n Etes-vous sûr de l'interrompre ?", ButtonType.YES, ButtonType.NO);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "La partie est en cours!\n Etes-vous sûr de l'interrompre ?", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Attention");
         return alert;
     }
@@ -247,7 +256,7 @@ public class Pendu extends Application {
     }
 
     public Alert popUpMessagePerdu() {
-        // A implementer    
+        // A implementer
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         return alert;
     }
@@ -261,7 +270,6 @@ public class Pendu extends Application {
     public void start(Stage stage) {
         stage.setTitle("IUTEAM'S - La plateforme de jeux de l'IUTO");
         stage.setScene(this.laScene(this.fenetreAccueil()));
-        // this.modeAccueil();
         stage.show();
     }
 
