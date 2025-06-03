@@ -13,10 +13,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.control.ButtonBar.ButtonData;
-
+import javafx.scene.text.TextAlignment;
 import java.util.List;
 import java.util.Arrays;
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -94,7 +95,6 @@ public class Pendu extends Application {
     @Override
     public void init() {
         this.fenetre = new BorderPane();
-        this.clavier = new Clavier("abcdefghijklmopqrstuvwxyz-", new ControleurLettres(this.modelePendu, this));
         this.modelePendu = new MotMystere("/usr/share/dict/french", 3, 10, MotMystere.FACILE, 10);
         this.lesImages = new ArrayList<Image>();
         this.chargerImages("./img");
@@ -113,6 +113,9 @@ public class Pendu extends Application {
         this.boutonMaison.setOnAction(new RetourAccueil(modelePendu, this));
         this.boutonParametres.setOnAction(new ControleurParametre(this));
         this.boutonInfo.setOnAction(new ControleurInfos(this));
+        this.clavier = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ-", new ControleurLettres(this.modelePendu, this));
+        this.dessin = new ImageView();
+        this.niveaux = Arrays.asList("Facile", "Médium", "Difficile", "Expert");
     }
 
     /**
@@ -135,29 +138,42 @@ public class Pendu extends Application {
         banniere.setPadding(new Insets(20));
         HBox hbox = new HBox(3);
         hbox.getChildren().addAll(this.boutonMaison, this.boutonParametres, this.boutonInfo);
+        hbox.setAlignment(Pos.CENTER);
         banniere.setRight(hbox);
         return banniere;
     }
 
-    // /**
-    // * @return le panel du chronomètre
-    // */
-    // private TitledPane leChrono(){
-    // A implementer
-    // TitledPane res = new TitledPane();
-    // return res;
-    // }
-    // /**
-    // * @return la fenêtre de jeu avec le mot crypté, l'image, la barre
-    // * de progression et le clavier
-    // */
     private Pane fenetreJeu() {
         BorderPane bp = new BorderPane();
         boutonMaison.setDisable(false);
         boutonParametres.setDisable(true);
         boutonInfo.setDisable(false);
-        bp.setBottom(this.clavier);
+        bp.setCenter(centerJeu());
+        bp.setRight(rightJeu());
+        bp.setPadding(new Insets(35));
         return bp;
+    }
+
+    private VBox centerJeu() {
+        VBox vbcenter = new VBox(5);
+        this.motCrypte = new Text(modelePendu.getMotCrypte());
+        this.motCrypte.setFont(Font.font("Arial", 25));
+        vbcenter.getChildren().addAll(this.motCrypte, this.dessin, this.clavier);
+        return vbcenter;
+    }
+
+    private VBox rightJeu() {
+        VBox vbright = new VBox(20);
+        this.leNiveau = new Text("Niveau " + this.niveaux.get(modelePendu.getNiveau()));
+        this.leNiveau.setFont(Font.font("Arial", 21));
+        vbright.getChildren().addAll(this.leNiveau, this.chrono());
+        return vbright;
+    }
+
+    private TitledPane chrono() {
+        TitledPane tp = new TitledPane("Chronomètre", this.chrono);
+        tp.setCollapsible(false);
+        return tp;
     }
 
     // /**
@@ -205,7 +221,6 @@ public class Pendu extends Application {
             this.lesImages.add(new Image(file.toURI().toString()));
         }
     }
-    
 
     public void modeAccueil() {
         this.fenetre.setCenter(fenetreAccueil());
@@ -214,7 +229,8 @@ public class Pendu extends Application {
     public void modeJeu() {
         this.fenetre.setCenter(fenetreJeu());
     }
-    public void ajtLettreFausse(String c){
+
+    public void ajtLettreFausse(String c) {
         this.lettreFausse.add(c);
         this.clavier.desactiveTouches(this.lettreFausse);
     }
@@ -227,7 +243,9 @@ public class Pendu extends Application {
      * lance une partie
      */
     public void lancePartie() {
+        this.chrono = new Chronometre();
         this.lettreFausse = new HashSet<>();
+        this.dessin.setImage(lesImages.get(0));
         this.modeJeu();
 
     }
@@ -245,8 +263,7 @@ public class Pendu extends Application {
      * @return le chronomètre du jeu
      */
     public Chronometre getChrono() {
-        // A implémenter
-        return null; // A enlever
+        return this.chrono;
     }
 
     public Alert popUpPartieEnCours() {
