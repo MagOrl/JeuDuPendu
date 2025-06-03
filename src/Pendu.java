@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Arrays;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Vue du jeu du pendu
@@ -81,12 +83,18 @@ public class Pendu extends Application {
     private Button boutonInfo;
     private Button bJouer;
 
+    private Set<String> lettreFausse;
+
+    private BorderPane fenetre;
+
     /**
      * initialise les attributs (créer le modèle, charge les images, crée le
      * chrono ...)
      */
     @Override
     public void init() {
+        this.fenetre = new BorderPane();
+        this.clavier = new Clavier("abcdefghijklmopqrstuvwxyz-", new ControleurLettres(this.modelePendu, this));
         this.modelePendu = new MotMystere("/usr/share/dict/french", 3, 10, MotMystere.FACILE, 10);
         this.lesImages = new ArrayList<Image>();
         this.chargerImages("./img");
@@ -110,11 +118,9 @@ public class Pendu extends Application {
     /**
      * @return le graphe de scène de la vue à partir de methodes précédantes
      */
-    private Scene laScene(Pane pn) {
-        BorderPane fenetre = new BorderPane();
+    private Scene laScene() {
         fenetre.setTop(this.titre());
-        fenetre.setCenter(pn);
-        return new Scene(fenetre, 800, 1000);
+        return new Scene(this.fenetre, 800, 1000);
     }
 
     /**
@@ -146,11 +152,11 @@ public class Pendu extends Application {
     // * de progression et le clavier
     // */
     private Pane fenetreJeu() {
+        BorderPane bp = new BorderPane();
         boutonMaison.setDisable(false);
         boutonParametres.setDisable(true);
         boutonInfo.setDisable(false);
-        BorderPane bp = new BorderPane();
-
+        bp.setBottom(this.clavier);
         return bp;
     }
 
@@ -199,13 +205,18 @@ public class Pendu extends Application {
             this.lesImages.add(new Image(file.toURI().toString()));
         }
     }
+    
 
     public void modeAccueil() {
-        this.laScene(fenetreAccueil());
+        this.fenetre.setCenter(fenetreAccueil());
     }
 
     public void modeJeu() {
-        this.laScene(fenetreJeu());
+        this.fenetre.setCenter(fenetreJeu());
+    }
+    public void ajtLettreFausse(String c){
+        this.lettreFausse.add(c);
+        this.clavier.desactiveTouches(this.lettreFausse);
     }
 
     public void modeParametres() {
@@ -216,7 +227,9 @@ public class Pendu extends Application {
      * lance une partie
      */
     public void lancePartie() {
-        // A implementer
+        this.lettreFausse = new HashSet<>();
+        this.modeJeu();
+
     }
 
     /**
@@ -269,7 +282,8 @@ public class Pendu extends Application {
     @Override
     public void start(Stage stage) {
         stage.setTitle("IUTEAM'S - La plateforme de jeux de l'IUTO");
-        stage.setScene(this.laScene(this.fenetreAccueil()));
+        stage.setScene(this.laScene());
+        this.modeAccueil();
         stage.show();
     }
 
