@@ -69,7 +69,7 @@ public class Pendu extends Application {
     /**
      * le panel Central qui pourra être modifié selon le mode (accueil ou jeu)
      */
-    private BorderPane panelCentral;
+    private BorderPane fenetre;
     /**
      * le bouton Paramètre / Engrenage
      */
@@ -82,11 +82,9 @@ public class Pendu extends Application {
      * le bouton qui permet de (lancer ou relancer une partie
      */
     private Button boutonInfo;
-    private Button bJouer;
 
     private Set<String> lettreFausse;
 
-    private BorderPane fenetre;
 
     /**
      * initialise les attributs (créer le modèle, charge les images, crée le
@@ -116,6 +114,8 @@ public class Pendu extends Application {
         this.clavier = new Clavier("ABCDEFGHIJKLMNOPQRSTUVWXYZ-", new ControleurLettres(this.modelePendu, this));
         this.dessin = new ImageView();
         this.niveaux = Arrays.asList("Facile", "Médium", "Difficile", "Expert");
+        this.pg = new ProgressBar();
+
     }
 
     /**
@@ -158,7 +158,7 @@ public class Pendu extends Application {
         VBox vbcenter = new VBox(5);
         this.motCrypte = new Text(modelePendu.getMotCrypte());
         this.motCrypte.setFont(Font.font("Arial", 25));
-        vbcenter.getChildren().addAll(this.motCrypte, this.dessin, this.clavier);
+        vbcenter.getChildren().addAll(this.motCrypte, this.dessin, this.pg, this.clavier);
         return vbcenter;
     }
 
@@ -166,7 +166,9 @@ public class Pendu extends Application {
         VBox vbright = new VBox(20);
         this.leNiveau = new Text("Niveau " + this.niveaux.get(modelePendu.getNiveau()));
         this.leNiveau.setFont(Font.font("Arial", 21));
-        vbright.getChildren().addAll(this.leNiveau, this.chrono());
+        Button nvPartie = new Button("relancer une partie");
+        nvPartie.setOnAction(new ControleurLancerPartie(modelePendu, this));
+        vbright.getChildren().addAll(this.leNiveau, this.chrono(), nvPartie);
         return vbright;
     }
 
@@ -247,20 +249,21 @@ public class Pendu extends Application {
         this.lettreFausse = new HashSet<>();
         this.dessin.setImage(lesImages.get(0));
         this.modeJeu();
-
     }
 
     /**
      * raffraichit l'affichage selon les données du modèle
      */
     public void majAffichage() {
+        this.motCrypte.setText(modelePendu.getMotCrypte());
+        this.dessin.setImage(lesImages.get(modelePendu.getNbErreursMax() - modelePendu.getNbErreursRestants()));
+        this.pg.setProgress((float) ((float) 1
+                - ((float) modelePendu.getNbErreursRestants() / (float) modelePendu.getNbErreursMax())));
         if (modelePendu.gagne()) {
             this.popUpMessageGagne().showAndWait();
         } else if (modelePendu.perdu()) {
             this.popUpMessagePerdu().showAndWait();
         }
-        this.motCrypte.setText(modelePendu.getMotCrypte());
-        this.dessin.setImage(lesImages.get(modelePendu.getNbErreursMax() - modelePendu.getNbErreursRestants()));
     }
 
     /**
@@ -280,33 +283,36 @@ public class Pendu extends Application {
     }
 
     public Alert popUpReglesDuJeu() {
-        // A implementer
         Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                "Le pendu est un jeu de devinettes simple mais captivant où le but est de deviner un mot ou une phrase en proposant des lettres. À chaque erreur, le dessin d'un pendu se complète jusqu'à ce que le mot soit trouvé ou que le dessin soit terminé.");
+                "Le but est de deviner un mot ou une phrase en proposant des lettres. À chaque erreur, le dessin d'un pendu se complète jusqu'à ce que le mot soit trouvé ou que le dessin soit terminé.");
+        alert.setTitle("Les règles du pendu");
         return alert;
     }
 
     public Alert popUpMessageGagne() {
         // A implementer
         Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                "Bravo ! Vous avez gagné, cela vous à prit" + modelePendu.getNbEssais() + " tentatives");
+                "Bravo ! Vous avez gagné, cela vous à prit " + modelePendu.getNbEssais() + " tentatives");
+        ImageView icon = new ImageView("../img/gagner.gif");
+        icon.setFitHeight(48);
+        icon.setFitWidth(48);
+        alert.getDialogPane().setGraphic(icon);
+        alert.setTitle("Bravo!");
         return alert;
     }
 
     public Alert popUpMessagePerdu() {
-        // A implementer
         Alert alert;
-        if (modelePendu.getNiveau() == 0) {
-            alert = new Alert(Alert.AlertType.INFORMATION, "Oh non! Tu à perdu... le mot était "
-                    + modelePendu.getMotATrouve() + " pourtant le jeu était mit en facile tes vraiment nulle enfet");
-        } else {
-            alert = new Alert(Alert.AlertType.INFORMATION,
-                    "Oh non! Tu à perdu... le mot était " + modelePendu.getMotATrouve());
-        }
+        String humiliation = modelePendu.getNiveau() == 0
+                ? " pourtant le jeu était mit en facile tes vraiment nul enfet."
+                : " met une difficulté plus basse si tu trouve ça trop dure.";
+        alert = new Alert(Alert.AlertType.INFORMATION, "Oh non! Tu à perdu... le mot était "
+                + modelePendu.getMotATrouve() + humiliation);
         ImageView icon = new ImageView("../img/perdu.jpg");
         icon.setFitHeight(48);
         icon.setFitWidth(48);
         alert.getDialogPane().setGraphic(icon);
+        alert.setTitle("Aie..");
         return alert;
     }
 
@@ -321,6 +327,13 @@ public class Pendu extends Application {
         stage.setScene(this.laScene());
         this.modeAccueil();
         stage.show();
+    }
+
+    public void reset() {
+        this.modelePendu.setMotATrouver();
+        clavier.reset();
+        this.pg.setProgress(0);
+        majAffichage();
     }
 
     /**

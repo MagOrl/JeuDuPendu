@@ -39,5 +39,6 @@ public class ControleurLancerPartie implements EventHandler<ActionEvent> {
         else{
             System.out.println("D'ac !");
         }
+        vuePendu.reset();
     }
 }

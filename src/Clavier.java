@@ -56,4 +56,9 @@ public class Clavier extends TilePane {
             }
         }
     }
+    public void reset(){
+        for(Button b: clavier){
+            b.setDisable(false);
+        }
+    }
 }
