@@ -254,7 +254,13 @@ public class Pendu extends Application {
      * raffraichit l'affichage selon les données du modèle
      */
     public void majAffichage() {
-        // A implementer
+        if (modelePendu.gagne()) {
+            this.popUpMessageGagne().showAndWait();
+        } else if (modelePendu.perdu()) {
+            this.popUpMessagePerdu().showAndWait();
+        }
+        this.motCrypte.setText(modelePendu.getMotCrypte());
+        this.dessin.setImage(lesImages.get(modelePendu.getNbErreursMax() - modelePendu.getNbErreursRestants()));
     }
 
     /**
@@ -275,19 +281,32 @@ public class Pendu extends Application {
 
     public Alert popUpReglesDuJeu() {
         // A implementer
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                "Le pendu est un jeu de devinettes simple mais captivant où le but est de deviner un mot ou une phrase en proposant des lettres. À chaque erreur, le dessin d'un pendu se complète jusqu'à ce que le mot soit trouvé ou que le dessin soit terminé.");
         return alert;
     }
 
     public Alert popUpMessageGagne() {
         // A implementer
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION,
+                "Bravo ! Vous avez gagné, cela vous à prit" + modelePendu.getNbEssais() + " tentatives");
         return alert;
     }
 
     public Alert popUpMessagePerdu() {
         // A implementer
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Alert alert;
+        if (modelePendu.getNiveau() == 0) {
+            alert = new Alert(Alert.AlertType.INFORMATION, "Oh non! Tu à perdu... le mot était "
+                    + modelePendu.getMotATrouve() + " pourtant le jeu était mit en facile tes vraiment nulle enfet");
+        } else {
+            alert = new Alert(Alert.AlertType.INFORMATION,
+                    "Oh non! Tu à perdu... le mot était " + modelePendu.getMotATrouve());
+        }
+        ImageView icon = new ImageView("../img/perdu.jpg");
+        icon.setFitHeight(48);
+        icon.setFitWidth(48);
+        alert.getDialogPane().setGraphic(icon);
         return alert;
     }
 

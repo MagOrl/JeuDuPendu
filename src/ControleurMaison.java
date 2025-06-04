@@ -21,5 +21,6 @@ public class ControleurMaison implements EventHandler<ActionEvent> {
      */
     @Override
     public void handle(ActionEvent actionEvent) {
+        appliPendu.modeAccueil();
     }
 }

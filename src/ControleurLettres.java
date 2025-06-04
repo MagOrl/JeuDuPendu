@@ -38,9 +38,8 @@ public class ControleurLettres implements EventHandler<ActionEvent> {
     public void handle(ActionEvent actionEvent) {
         Button bt = (Button) actionEvent.getTarget();
         char lettre = bt.getText().charAt(0);
-        int val = this.modelePendu.essaiLettre(lettre);
-        if(val==0){
-            this.vuePendu.ajtLettreFausse(lettre+"");
-        }
+        this.modelePendu.essaiLettre(lettre);
+        this.vuePendu.ajtLettreFausse(lettre+"");
+        vuePendu.majAffichage();
     }
 }
