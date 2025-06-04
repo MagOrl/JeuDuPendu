@@ -40,5 +40,6 @@ public class ControleurLancerPartie implements EventHandler<ActionEvent> {
             System.out.println("D'ac !");
         }
         vuePendu.reset();
+        vuePendu.lanceChrono();
     }
 }

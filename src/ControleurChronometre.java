@@ -54,6 +54,5 @@ public class ControleurChronometre implements EventHandler<ActionEvent> {
     public void reset(){
         this.duree = 0;
         this.tempsCourant = -1;
-        this.chrono.resetTime();
     }
 }

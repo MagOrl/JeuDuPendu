@@ -50,8 +50,9 @@ public class Chronometre extends Text {
             min = tempsMillisec / 60000;
             res += (int) min + " Minutes" + (min - ((int) min)) / 60 + " Secondes";
         } else {
-            res += tempsMillisec * 1000 + " Secondes";
+            res += (int)(tempsMillisec * 0.001) + " Secondes";
         }
+        this.setText(res);
     }
 
     /**
@@ -72,6 +73,6 @@ public class Chronometre extends Text {
      * Permet de remettre le chronomètre à 0
      */
     public void resetTime() {
-        this.setText("0");
+        this.actionTemps.reset();
     }
 }

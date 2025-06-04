@@ -85,7 +85,6 @@ public class Pendu extends Application {
 
     private Set<String> lettreFausse;
 
-
     /**
      * initialise les attributs (créer le modèle, charge les images, crée le
      * chrono ...)
@@ -260,10 +259,16 @@ public class Pendu extends Application {
         this.pg.setProgress((float) ((float) 1
                 - ((float) modelePendu.getNbErreursRestants() / (float) modelePendu.getNbErreursMax())));
         if (modelePendu.gagne()) {
+            this.chrono.stop();
             this.popUpMessageGagne().showAndWait();
         } else if (modelePendu.perdu()) {
+            this.chrono.stop();
             this.popUpMessagePerdu().showAndWait();
         }
+    }
+
+    public void lanceChrono() {
+        this.chrono.start();
     }
 
     /**
