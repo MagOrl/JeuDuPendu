@@ -32,9 +32,12 @@ public class Clavier extends TilePane {
      */
     public Clavier(String touches, EventHandler<ActionEvent> actionTouches) {
         this.clavier = new ArrayList<>();
+        this.setPrefRows(3);
+        this.setPrefColumns(8);
         for (int i = 0; i < touches.length(); ++i) {
             Button bt = new Button(touches.charAt(i) + "");
-            bt.setShape(new Circle(1.5));
+            Circle circle = new Circle(1.5,25.,25.);
+            bt.setShape(circle);
             clavier.add(bt);
             clavier.get(i).setOnAction(actionTouches);
             this.getChildren().add(bt);
@@ -56,8 +59,9 @@ public class Clavier extends TilePane {
             }
         }
     }
-    public void reset(){
-        for(Button b: clavier){
+
+    public void reset() {
+        for (Button b : clavier) {
             b.setDisable(false);
         }
     }

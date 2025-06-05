@@ -155,9 +155,11 @@ public class Pendu extends Application {
 
     private VBox centerJeu() {
         VBox vbcenter = new VBox(5);
+        vbcenter.setFillWidth(false);
         this.motCrypte = new Text(modelePendu.getMotCrypte());
         this.motCrypte.setFont(Font.font("Arial", 25));
         vbcenter.getChildren().addAll(this.motCrypte, this.dessin, this.pg, this.clavier);
+        vbcenter.setAlignment(Pos.BASELINE_CENTER);
         return vbcenter;
     }
 
@@ -289,7 +291,7 @@ public class Pendu extends Application {
 
     public Alert popUpReglesDuJeu() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                "Le but est de deviner un mot ou une phrase en proposant des lettres. À chaque erreur, le dessin d'un pendu se complète jusqu'à ce que le mot soit trouvé ou que le dessin soit terminé.");
+                "Le but est de deviner un mot ou une phrase en proposant des lettres.À chaque erreur, le dessin d'un pendu se complète jusqu'à ce que le mot soit trouvé ou que le dessin soit terminé.");
         alert.setTitle("Les règles du pendu");
         return alert;
     }
