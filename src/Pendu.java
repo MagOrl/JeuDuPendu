@@ -149,22 +149,22 @@ public class Pendu extends Application {
         boutonInfo.setDisable(false);
         bp.setCenter(centerJeu());
         bp.setRight(rightJeu());
-        bp.setPadding(new Insets(35));
+        bp.setPadding(new Insets(15));
         return bp;
     }
 
     private VBox centerJeu() {
-        VBox vbcenter = new VBox(5);
+        VBox vbcenter = new VBox(20);
         vbcenter.setFillWidth(false);
         this.motCrypte = new Text(modelePendu.getMotCrypte());
         this.motCrypte.setFont(Font.font("Arial", 25));
         vbcenter.getChildren().addAll(this.motCrypte, this.dessin, this.pg, this.clavier);
-        vbcenter.setAlignment(Pos.BASELINE_CENTER);
+        vbcenter.setAlignment(Pos.TOP_CENTER);
         return vbcenter;
     }
 
     private VBox rightJeu() {
-        VBox vbright = new VBox(20);
+        VBox vbright = new VBox(50);
         this.leNiveau = new Text("Niveau " + this.niveaux.get(modelePendu.getNiveau()));
         this.leNiveau.setFont(Font.font("Arial", 21));
         Button nvPartie = new Button("relancer une partie");
@@ -284,22 +284,26 @@ public class Pendu extends Application {
 
     public Alert popUpPartieEnCours() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                "La partie est en cours!\n Etes-vous sûr de l'interrompre ?", ButtonType.YES, ButtonType.NO);
+                "Êtes vous sûr de commencer une nouvelle partie ?", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Attention");
         return alert;
     }
 
     public Alert popUpReglesDuJeu() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                "Le but est de deviner un mot ou une phrase en proposant des lettres.À chaque erreur, le dessin d'un pendu se complète jusqu'à ce que le mot soit trouvé ou que le dessin soit terminé.");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Text txt = new Text("Le but est de deviner un mot ou une phrase en proposant des lettres. À chaque erreur, le dessin d'un pendu se complète jusqu'à ce que le mot soit trouvé ou que le dessin soit terminé.");
+        txt.setWrappingWidth(300);
+        alert.getDialogPane().setContent(txt);
         alert.setTitle("Les règles du pendu");
         return alert;
     }
 
     public Alert popUpMessageGagne() {
         // A implementer
-        Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                "Bravo ! Vous avez gagné, cela vous à prit " + modelePendu.getNbEssais() + " tentatives");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Text txt = new Text("Bravo ! Vous avez gagné, cela vous à prit " + modelePendu.getNbEssais() + " tentatives");
+        alert.getDialogPane().setContent(txt);
+        txt.setWrappingWidth(300);
         ImageView icon = new ImageView("../img/gagner.gif");
         icon.setFitHeight(48);
         icon.setFitWidth(48);
@@ -313,13 +317,17 @@ public class Pendu extends Application {
         String humiliation = modelePendu.getNiveau() == 0
                 ? " pourtant le jeu était mit en facile tes vraiment nul enfet."
                 : " met une difficulté plus basse si tu trouve ça trop dure.";
-        alert = new Alert(Alert.AlertType.INFORMATION, "Oh non! Tu à perdu... le mot était "
+        Text txt = new Text("Oh non! Tu à perdu... le mot était "
                 + modelePendu.getMotATrouve() + humiliation);
+        txt.setWrappingWidth(300);
+        alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.getDialogPane().setContent(txt);
         ImageView icon = new ImageView("../img/perdu.jpg");
         icon.setFitHeight(48);
         icon.setFitWidth(48);
         alert.getDialogPane().setGraphic(icon);
         alert.setTitle("Aie..");
+
         return alert;
     }
 
