@@ -64,6 +64,11 @@ public class Clavier extends TilePane {
             }
         }
     }
+    public void desactiveToutesTouches(){
+        for(Button bt:clavier){
+            bt.setDisable(true);
+        }
+    }
 
     public void reset() {
         for (Button b : clavier) {

@@ -85,6 +85,10 @@ public class Pendu extends Application {
 
     private Set<String> lettreFausse;
 
+    private Timer timer;
+
+    private long timeMax;
+
     /**
      * initialise les attributs (créer le modèle, charge les images, crée le
      * chrono ...)
@@ -170,6 +174,9 @@ public class Pendu extends Application {
         Button nvPartie = new Button("relancer une partie");
         nvPartie.setOnAction(new ControleurLancerPartie(modelePendu, this));
         vbright.getChildren().addAll(this.leNiveau, this.chrono(), nvPartie);
+        if (timer() != null) {
+            vbright.getChildren().add(this.timer());
+        }
         return vbright;
     }
 
@@ -177,6 +184,18 @@ public class Pendu extends Application {
         TitledPane tp = new TitledPane("Chronomètre", this.chrono);
         tp.setCollapsible(false);
         return tp;
+    }
+
+    private TitledPane timer() {
+        if (this.timeMax == -1)
+            return null;
+        TitledPane tp = new TitledPane("Timer", this.timer);
+        tp.setCollapsible(false);
+        return tp;
+    }
+
+    public void setTimer(long time) {
+        this.timeMax = time;
     }
 
     // /**
@@ -212,6 +231,33 @@ public class Pendu extends Application {
         return vb;
     }
 
+    private Pane fenetreParametre() {
+        boutonMaison.setDisable(false);
+        boutonParametres.setDisable(true);
+        boutonInfo.setDisable(false);
+        VBox vb = new VBox(20);
+        ToggleGroup tg = new ToggleGroup();
+        RadioButton rb1 = new RadioButton("Pas de timer");
+        RadioButton rb2 = new RadioButton("1 minutes");
+        RadioButton rb3 = new RadioButton("2 minutes");
+        RadioButton rb4 = new RadioButton("3 minutes");
+        rb1.setOnAction(new ControleurSetTimer(this));
+        rb2.setOnAction(new ControleurSetTimer(this));
+        rb3.setOnAction(new ControleurSetTimer(this));
+        rb4.setOnAction(new ControleurSetTimer(this));
+        rb1.setToggleGroup(tg);
+        rb3.setToggleGroup(tg);
+        rb2.setToggleGroup(tg);
+        rb4.setToggleGroup(tg);
+        VBox radiobox = new VBox(10);
+        radiobox.getChildren().addAll(rb1, rb2, rb3, rb4);
+        TitledPane tp = new TitledPane("Timer", radiobox);
+        tp.setCollapsible(false);
+        vb.getChildren().addAll(tp);
+        vb.setPadding(new Insets(15));
+        return vb;
+    }
+
     /**
      * charge les images à afficher en fonction des erreurs
      *
@@ -233,22 +279,27 @@ public class Pendu extends Application {
         this.fenetre.setCenter(fenetreJeu());
     }
 
+    public void modeParametres() {
+        this.fenetre.setCenter(fenetreParametre());
+    }
+
     public void ajtLettreFausse(String c) {
         this.lettreFausse.add(c);
         this.clavier.desactiveTouches(this.lettreFausse);
-    }
-
-    public void modeParametres() {
-        // A implémenter
     }
 
     /**
      * lance une partie
      */
     public void lancePartie() {
+
         this.chrono = new Chronometre();
+        if (this.timeMax != -1) {
+            this.timer = new Timer(timeMax,this);
+        }
         this.lettreFausse = new HashSet<>();
         this.dessin.setImage(lesImages.get(0));
+
         this.modeJeu();
     }
 
@@ -268,9 +319,18 @@ public class Pendu extends Application {
             this.popUpMessagePerdu().showAndWait();
         }
     }
-
+    public void perduChrono(){
+        this.clavier.desactiveToutesTouches();
+        this.timer.stop();
+        this.chrono.stop();
+        this.popUpMessageTimeOut().show();
+    }
     public void lanceChrono() {
         this.chrono.start();
+    }
+
+    public void lanceTimer() {
+        this.timer.start();
     }
 
     /**
@@ -291,7 +351,8 @@ public class Pendu extends Application {
 
     public Alert popUpReglesDuJeu() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        Text txt = new Text("Le but est de deviner un mot ou une phrase en proposant des lettres. À chaque erreur, le dessin d'un pendu se complète jusqu'à ce que le mot soit trouvé ou que le dessin soit terminé.");
+        Text txt = new Text(
+                "Le but est de deviner un mot ou une phrase en proposant des lettres. À chaque erreur, le dessin d'un pendu se complète jusqu'à ce que le mot soit trouvé ou que le dessin soit terminé.");
         txt.setWrappingWidth(300);
         alert.getDialogPane().setContent(txt);
         alert.setTitle("Les règles du pendu");
@@ -330,7 +391,24 @@ public class Pendu extends Application {
 
         return alert;
     }
+    public Alert popUpMessageTimeOut() {
+        Alert alert;
+        String humiliation = modelePendu.getNiveau() == 0
+                ? " pourtant le jeu était mit en facile tes vraiment nul enfet."
+                : " met une difficulté plus basse si tu trouve ça trop dure.";
+        Text txt = new Text("T I M E O U T  le temps est dépassé ! le mot était  "
+                + modelePendu.getMotATrouve() + humiliation);
+        txt.setWrappingWidth(300);
+        alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.getDialogPane().setContent(txt);
+        ImageView icon = new ImageView("../img/perdu.jpg");
+        icon.setFitHeight(48);
+        icon.setFitWidth(48);
+        alert.getDialogPane().setGraphic(icon);
+        alert.setTitle("Aie..");
 
+        return alert;
+    }
     /**
      * créer le graphe de scène et lance le jeu
      *
