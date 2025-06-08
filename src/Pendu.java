@@ -82,11 +82,17 @@ public class Pendu extends Application {
      * le bouton qui permet de (lancer ou relancer une partie
      */
     private Button boutonInfo;
-
+    /**
+     * l'ensemble des letttres déjà utiliser
+     */
     private Set<String> lettreFausse;
-
+    /**
+     * la vue Timer
+     */
     private Timer timer;
-
+    /**
+     * le temps que l'utilisateur choisi pour le timer 
+     */
     private long timeMax;
 
     /**
@@ -146,6 +152,9 @@ public class Pendu extends Application {
         return banniere;
     }
 
+    // /**
+    // * @return la fenetre de jeu avec tout les élément qui le compose
+    // */
     private Pane fenetreJeu() {
         BorderPane bp = new BorderPane();
         boutonMaison.setDisable(false);
@@ -157,6 +166,10 @@ public class Pendu extends Application {
         return bp;
     }
 
+    /**
+     * @return le centre de la page de jeu, avec le dessin le clavier le la barre de
+     *         progression
+     */
     private VBox centerJeu() {
         VBox vbcenter = new VBox(20);
         vbcenter.setFillWidth(false);
@@ -167,6 +180,10 @@ public class Pendu extends Application {
         return vbcenter;
     }
 
+    /**
+     * @return la partie droite de la page de jeu, avec le chronomètre, bouton
+     *         relancer partie ainsi que le timer
+     */
     private VBox rightJeu() {
         VBox vbright = new VBox(50);
         this.leNiveau = new Text("Niveau " + this.niveaux.get(modelePendu.getNiveau()));
@@ -180,12 +197,18 @@ public class Pendu extends Application {
         return vbright;
     }
 
+    /**
+     * @return la boîte ou le chronomètre est à l'intérieure
+     */
     private TitledPane chrono() {
         TitledPane tp = new TitledPane("Chronomètre", this.chrono);
         tp.setCollapsible(false);
         return tp;
     }
 
+    /**
+     * @return la boîte ou le timer est à l'intérieure
+     */
     private TitledPane timer() {
         if (this.timeMax == -1)
             return null;
@@ -194,14 +217,17 @@ public class Pendu extends Application {
         return tp;
     }
 
+    /**
+     * @return permet de définir quelle temps serat mit en timer
+     */
     public void setTimer(long time) {
         this.timeMax = time;
     }
 
-    // /**
-    // * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de
-    // jeu
-    // */
+    /**
+     * @return la fenêtre d'accueil sur laquelle on peut choisir les paramètres de
+     *         jeu
+     */
     private Pane fenetreAccueil() {
         boutonMaison.setDisable(true);
         boutonParametres.setDisable(false);
@@ -231,6 +257,10 @@ public class Pendu extends Application {
         return vb;
     }
 
+    /**
+     * @return la fenêtre de paramètre sur laquelle on peut choisir la durée du
+     *         timer.
+     */
     private Pane fenetreParametre() {
         boutonMaison.setDisable(false);
         boutonParametres.setDisable(true);
@@ -271,14 +301,23 @@ public class Pendu extends Application {
         }
     }
 
+    /**
+     * permet de metttre la page d'acceuil au centre de la scène
+     */
     public void modeAccueil() {
         this.fenetre.setCenter(fenetreAccueil());
     }
 
+    /**
+     * permet de metttre la page de jeu au centre de la scène
+     */
     public void modeJeu() {
         this.fenetre.setCenter(fenetreJeu());
     }
 
+    /**
+     * permet de metttre la page de jeu au centre de la scène
+     */
     public void modeParametres() {
         this.fenetre.setCenter(fenetreParametre());
     }
@@ -295,7 +334,7 @@ public class Pendu extends Application {
 
         this.chrono = new Chronometre();
         if (this.timeMax != -1) {
-            this.timer = new Timer(timeMax,this);
+            this.timer = new Timer(timeMax, this);
         }
         this.lettreFausse = new HashSet<>();
         this.dessin.setImage(lesImages.get(0));
@@ -319,18 +358,16 @@ public class Pendu extends Application {
             this.popUpMessagePerdu().showAndWait();
         }
     }
-    public void perduChrono(){
+
+    /**
+     * permet de faire perdre si le temps est écouler (ce traitement ce fait dans le
+     * controleur)
+     */
+    public void perduChrono() {
         this.clavier.desactiveToutesTouches();
         this.timer.stop();
         this.chrono.stop();
         this.popUpMessageTimeOut().show();
-    }
-    public void lanceChrono() {
-        this.chrono.start();
-    }
-
-    public void lanceTimer() {
-        this.timer.start();
     }
 
     /**
@@ -342,6 +379,11 @@ public class Pendu extends Application {
         return this.chrono;
     }
 
+    /**
+     * alerte qui averti qu'une partie va se lancer si il appuye sur "oui"
+     *
+     * @return l'alerte de l'intitule
+     */
     public Alert popUpPartieEnCours() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                 "Êtes vous sûr de commencer une nouvelle partie ?", ButtonType.YES, ButtonType.NO);
@@ -349,6 +391,12 @@ public class Pendu extends Application {
         return alert;
     }
 
+    /**
+     * popup qui donne les règles du jeux pour les 3 personnes qui ne connaissent
+     * pas le pendu
+     *
+     * @return l'alerte de l'intitule
+     */
     public Alert popUpReglesDuJeu() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         Text txt = new Text(
@@ -359,6 +407,11 @@ public class Pendu extends Application {
         return alert;
     }
 
+    /**
+     * popup qui averti que le joueur à gagner
+     * 
+     * @return l'alerte de l'intitule
+     */
     public Alert popUpMessageGagne() {
         // A implementer
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -373,6 +426,11 @@ public class Pendu extends Application {
         return alert;
     }
 
+    /**
+     * popup qui averti que le joueur à perdu
+     * 
+     * @return l'alerte de l'intitule
+     */
     public Alert popUpMessagePerdu() {
         Alert alert;
         String humiliation = modelePendu.getNiveau() == 0
@@ -391,12 +449,18 @@ public class Pendu extends Application {
 
         return alert;
     }
+
+    /**
+     * popup qui averti que le joueur à timeout
+     * 
+     * @return l'alerte de l'intitule
+     */
     public Alert popUpMessageTimeOut() {
         Alert alert;
         String humiliation = modelePendu.getNiveau() == 0
                 ? " pourtant le jeu était mit en facile tes vraiment nul enfet."
                 : " met une difficulté plus basse si tu trouve ça trop dure.";
-        Text txt = new Text("T I M E O U T  le temps est dépassé ! le mot était  "
+        Text txt = new Text("T I M E  O U T  le temps est dépassé ! le mot était  "
                 + modelePendu.getMotATrouve() + humiliation);
         txt.setWrappingWidth(300);
         alert = new Alert(Alert.AlertType.INFORMATION);
@@ -409,6 +473,7 @@ public class Pendu extends Application {
 
         return alert;
     }
+
     /**
      * créer le graphe de scène et lance le jeu
      *
@@ -422,6 +487,9 @@ public class Pendu extends Application {
         stage.show();
     }
 
+    /**
+     * reset la vue
+     */
     public void reset() {
         this.modelePendu.setMotATrouver();
         clavier.reset();

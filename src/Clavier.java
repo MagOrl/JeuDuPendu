@@ -64,12 +64,19 @@ public class Clavier extends TilePane {
             }
         }
     }
-    public void desactiveToutesTouches(){
-        for(Button bt:clavier){
+
+    /**
+     * permet de griser toutes les touches
+     */
+    public void desactiveToutesTouches() {
+        for (Button bt : clavier) {
             bt.setDisable(true);
         }
     }
 
+    /**
+     * dégrise toutes les touches
+     */
     public void reset() {
         for (Button b : clavier) {
             b.setDisable(false);

@@ -21,13 +21,13 @@ public class Timer extends Text {
      */
     private KeyFrame keyFrame;
     /**
-     * le contrôleur associé au chronomètre
+     * le contrôleur associé au timer
      */
     private ControleurTimer actionTemps;
 
     /**
-     * Constructeur permettant de créer le chronomètre avec un label initialisé
-     * à "0:0:0" Ce constructeur créer la Timeline, la KeyFrame et le contrôleur
+     * Constructeur permettant de créer le timer avec un label initialisé
+     * à @temps Ce constructeur créer la Timeline, la KeyFrame et le contrôleur
      */
     public Timer(long temps,Pendu vuePendu) {
         super();
@@ -61,14 +61,14 @@ public class Timer extends Text {
     }
 
     /**
-     * Permet de démarrer le chronomètre
+     * Permet de démarrer le timer
      */
     public void start() {
         timeline.play();
     }
 
     /**
-     * Permet d'arrêter le chronomètre
+     * Permet d'arrêter le timer
      */
     public void stop() {
         timeline.stop();

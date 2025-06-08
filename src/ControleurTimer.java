@@ -13,7 +13,12 @@ public class ControleurTimer implements EventHandler<ActionEvent> {
     private long duree;
 
     private Pendu vuePendu;
-
+    /**
+     * 
+     * @param t la vue
+     * @param temps le temps max que l'utilisateur à choisi 
+     * @param vuePendu l'application
+     */
     public ControleurTimer(Timer t, long temps,Pendu vuePendu) {
         this.timer = t;
         this.temps = temps;
