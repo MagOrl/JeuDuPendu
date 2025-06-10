@@ -124,6 +124,7 @@ public class Pendu extends Application {
         this.dessin = new ImageView();
         this.niveaux = Arrays.asList("Facile", "Médium", "Difficile", "Expert");
         this.pg = new ProgressBar();
+        this.timeMax = -1;
 
     }
 
